@@ -243,11 +243,241 @@ Electricity_access.columns = ['Entity', 'Year', 'percent_access_to_electricity']
 
 """# DATA CLEANING 2"""
 
+#dropping average row from Energy dataset
+Energy_2009.drop([0], axis=0, inplace=True)
+Energy_2009.head(3)
+
+#checking for null values
+Energy_2009.isnull().sum()
+
+#dropping null values
+Energy_2009.dropna(inplace=True)
+Energy_2009.isnull().sum()
+
+#reseting the index
+Energy_2009 = Energy_2009.reset_index()
+Energy_2009.head(3)
+
+#drop extra index column
+Energy_2009.drop(['index'], axis=1, inplace=True)
+Energy_2009.head()
+
 #dropping fossil table as it's the same as the Oil % column in Source table.
 #dropping Carbon table as it's the same as the renewables table.
-#Appending renewables to t
+#Appending renewables to the Sources column.
+
+Source['percent_total_renewables'] = Renewables['Renewables_percent_of_electricity']
 Source.head()
 
-Renewables.head()
+#Standardization of column names
+#Using strip(), lower() and replace() functions
+#Source table
+Source.columns = Source.columns.str.strip().str.lower()
+Source.head(1)
 
+#reseting the index column
+Source = Source.reset_index()
+Source.head()
+
+#drop extra index column
+Source.drop('index', axis=1, inplace=True)
+Source.head(1)
+
+#Previewing the table
 Electricity_access.head()
+
+#Standardization of column names
+#Using strip(), lower() and replace() functions
+#Electricity table
+Electricity_access.columns = Electricity_access.columns.str.strip().str.lower()
+Electricity_access.head(1)
+
+#reseting the index column
+Electricity_access = Electricity_access.reset_index()
+Electricity_access.head()
+
+#drop extra index column
+Electricity_access.drop('index', axis=1, inplace=True)
+Electricity_access.head(1)
+
+"""# DATA ANALYSIS
+
+## Compare 2009 and 2011 datasets
+
+### Compare households with electricity (%) 2009-2011
+"""
+
+#2011 dataset preview
+Energy_2011 = Energy1_2017.copy(deep= True)
+Energy_2011.head(1)
+
+#2009 dataset preview
+#Energy_2009.head(2)
+
+#Calculating % of households with electricity in 2011 dataset
+e = (Energy_2011['no_of_households_with_electricity'] + Energy_2011['no_of_households_with_solar'])/(Energy_2011['households'])
+e1 = e*100
+#calculating difference in electricity connectivity between 2009 and 2011
+
+Energy_2011['percent_growth_elec_2009_2011'] = e1 - Energy_2009['percent_access_to_electricity']
+Energy_2011.head()
+
+"""### Compare households without electricity (%) 2009-2011"""
+
+#Non renewable energy in this year as country hadn’t started projects (*except hydro)
+#2009
+Energy_2009['percent_without_elec'] = (100-(Energy_2009['percent_access_to_electricity']))
+Energy_2009.head()
+
+#2011
+#% with electricity
+Energy_2011['percent_with_elec'] = e1
+Energy_2011.head()
+#% without electricity
+Energy_2011['percent_without_elec'] = (100 -e1)
+Energy_2011.head()
+
+"""## 2011 analysis: Compare renewable energy 2011 with World Bank
+
+
+"""
+
+Source
+
+Electricity_access
+
+Electricity_total = (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum()) / Energy_2011['households'].sum()
+Electricity_total * 100
+
+# Check if 2011 solar adds up to 0.305242% as reported by World Bank
+Solar = Energy_2011['no_of_households_with_solar'].sum() / (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum())
+Solar_percentage = Solar * 100
+Solar_percentage
+#Source.loc[Source.year == 2011, 'solar_percent_of_electricity'] / Solar_percentage
+# Value shows that the World Bank solar percentage is lower than the 2011 dataset from Open Data.
+
+# Check if 2011 electricity percentage matches hydro or oil as reported by World Bank
+Electricity = Energy_2011['no_of_households_with_electricity'].sum() / (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum())
+Elec_percentage = Electricity * 100
+Elec_percentage
+# Source.loc[Source.year == 2011, ''] / Solar_percentage
+
+"""### Is the country in line with 2020 and 2030 targets?
+
+"""
+
+#using access to elec diff btwn 09 and 11 was there progress in inc. access?(overall)
+#maybe divide that by number of years(2) and use that value loosely to calc. whether by 2020 and 2030 goals of 80 and 100
+#will be met.
+#80% divide by 2020-2009 to see annual ideal annual trend and compare to above.
+
+"""## WORLD BANK DATASETS
+
+### Compare general stats for Kenya (2009 & 2011) with World Bank datasets for Validity
+"""
+
+#sum 2009,11 and compare WB corresponding years. Bar chart(09/11)
+
+"""### Observe share of the population with access to electricity over the years (trend)
+
+"""
+
+#population with electricity over the years
+Electricity_access.head()
+
+Electricity_access.plot(x='year', y='percent_access_to_electricity',figsize= (20,10), label ='Access to Electricity')
+plt.title('Proportion of Kenyan Population with Access to Electricity')
+plt.xlabel('YEAR')
+plt.ylabel('Population with Access to Electricity(%)')
+plt.show()
+
+##possible recommendations: try and explain reason for dips using secondary sources of data
+
+"""### Observe share of electricity by source over the years (trend)"""
+
+#share of electricity by source over the years
+Source.head()
+
+#defining what to plot and how to do it
+plt.figure(figsize= (20,10))
+plt.plot(Source['year'], Source['coal_percent_of_electricity'],'r', label='Coal')
+plt.plot(Source['year'], Source['oil_percent_of_electricity'], 'b', label='Oil')
+plt.plot(Source['year'], Source['hydro_percent_of_electricity'], 'g', label='Hydro')
+plt.plot(Source['year'], Source['gas_percent_of_electricity'], 'c', label= 'Gas')
+plt.plot(Source['year'], Source['nuclear_percent_of_electricity'], 'm', label='Nuclear')
+plt.plot(Source['year'], Source['solar_percent_of_electricity'], 'y', label='Solar')
+plt.plot(Source['year'], Source['wind_percent_of_electricity'], 'k', label='Wind')
+plt.plot(Source['year'], Source['other_renewables_percent_of_electricity'], '0.6', label='Other Renewables')
+
+
+#plotting all the types onto the same plot for comparison
+plt.title('Proportion of Energy Type Sources for Electricity Used in Kenya')
+plt.xlabel('YEAR')
+plt.ylabel('Percentage Source Type of Electricity(%)')
+plt.xticks(np.arange(min(Source['year']), max(Source['year']), 2.0))
+plt.legend()
+plt.show()
+
+"""### Observe share of electricity with fossil fuels over the years (trend)"""
+
+#Fossil fuel usage will be the sum of all carbon sourced energy forms
+#creating a column to reflect that
+#Nuclear energy was not included as a fossil fuel
+Source['fossil_percent_of_electricity'] = Source['coal_percent_of_electricity'] + Source['oil_percent_of_electricity'] + Source['gas_percent_of_electricity']
+Source.head()
+
+#plotting the share of fossil fuel over the years
+Source.plot(x='year', y='fossil_percent_of_electricity',figsize= (20,10), label= 'Fossil')
+plt.title('Proportion of Fossil Fuel as Electricity Source in Kenya')
+plt.xlabel('Years')
+plt.ylabel('Fossil Fuel as Electricity Source(%)')
+plt.xticks(np.arange(min(Source['year']), max(Source['year']), 2.0))
+plt.show()
+
+"""### Observe trend of carbon emissions over the years
+
+"""
+
+#The trend of Carbon Emissions can be tracked by the trend of the use of fossil fuel as shown above/previous cell.
+
+"""### Observe share of electricity with renewable energy over the years (trend)
+
+"""
+
+#Renewables usage
+#plotting the share of renewables over the years
+Source.plot(x='year', y='percent_total_renewables',figsize= (20,10), label = 'Renewables')
+plt.title('Proportion of Renewables as Electricity Source in Kenya')
+plt.xlabel('Years')
+plt.ylabel('Renewables as Electricity Source(%)')
+plt.xticks(np.arange(min(Source['year']), max(Source['year']), 2.0))
+plt.show()
+
+"""### Comparison of electricity with renewable vs fossil fuel"""
+
+#plotting both together to view the trends simultaneously over the years
+#defining what to plot and how to do it
+plt.figure(figsize= (20,10))
+plt.plot(Source['year'], Source['fossil_percent_of_electricity'],'r', label='Fossil')
+plt.plot(Source['year'], Source['percent_total_renewables'], 'g', label='Renewables')
+
+
+#plotting both types onto the same plot for comparison
+plt.title('Proportion of Fossil Vs Renewable Energy as Electricity Sources Used in Kenya')
+plt.xlabel('YEAR')
+plt.ylabel('Source of Electricity(%)')
+plt.xticks(np.arange(min(Source['year']), max(Source['year']), 2.0))
+plt.legend()
+plt.show()
+
+"""### Is the country in line with 30% reduction of fossil fuel from 2015?"""
+
+#2019 - 2015 fossil fuel, is it == to 30%?
+
+"""### Is the country in line to achieve 80% renewable energy as the primary energy source?(2020)"""
+
+#check renewable % by 2019, then forecast to 2020?
+
+"""### Is the country in line to achieve 100% renewable energy as the primary energy source?(2022)"""
+
+#renewable plot up to 2019 average that over the remaining year for 2020 and 2022???
