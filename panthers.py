@@ -186,6 +186,7 @@ Energy_2009.head()
 # Making the above consistent with the previous data
 Energy_2009.rename(columns= {'Counties': 'County', 'Access to electricity': 'percent_access_to_electricity' }, inplace = True)
 Energy_2009.columns = Energy_2009.columns.str.strip().str.lower()
+copy_2009 = Energy_2009.copy(deep=True)
 Energy_2009.head()
 
 # Loading the world bank datasets into the environment
@@ -322,6 +323,28 @@ e1 = e*100
 Energy_2011['percent_growth_elec_2009_2011'] = e1 - Energy_2009['percent_access_to_electricity']
 Energy_2011.head()
 
+"""### County with highest growth between 2009 and 2011 in terms of Electricity access"""
+
+#county with largest growth/ % change between 2009 and 2011
+larg = Energy_2011['percent_growth_elec_2009_2011'].max()
+larg
+Energy_2011.loc[Energy_2011['percent_growth_elec_2009_2011'] == larg]
+
+"""### County with lowest growth between 2009 and 2011 in terms of Electricity access"""
+
+#county with lowest growth/ % change between 2009 and 2011
+smal = Energy_2011['percent_growth_elec_2009_2011'].min()
+smal
+Energy_2011.loc[Energy_2011['percent_growth_elec_2009_2011'] == smal]
+
+"""### 2009 Electricity Accessibility compared to World Bank records(2009)"""
+
+copy_2009.head()
+
+#from copy_2009 we have the country average as 23% we can check whether 2009 dataset aligns
+#with World Bank dataset.
+Electricity_access.iloc[19, 2:] == 23
+
 """### Compare households without electricity (%) 2009-2011"""
 
 #Non renewable energy in this year as country hadn’t started projects (*except hydro)
@@ -337,39 +360,194 @@ Energy_2011.head()
 Energy_2011['percent_without_elec'] = (100 -e1)
 Energy_2011.head()
 
+"""### Compare households with electricity (%) 2009-2011"""
+
+# Comparing overall accessibility to electricity in Kenya between 2009 and 2011
+#creating variable 2009 overal country accessibility to Elec
+v2009 = copy_2009.iloc[0, 2]
+v2009
+#variable to store/reference overall 2019 connectivity to Elec
+o19 = (Energy_2011['no_of_households_with_electricity'] + Energy_2011['no_of_households_with_solar']).sum()/(Energy_2011['households']).sum()
+v2011 = round(o19*100,1)
+v2011
+#list to store years compared
+l = [2009,2011]
+#var to store both 2009 and 2011 accessibility values as list
+a = [v2009,v2011]
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(l, a,color ='maroon',  width = 0.5)
+
+plt.xlabel("YEAR")
+plt.ylabel("Access to Electricity(%)")
+plt.title("Comparison Between 2009 and 2011 Access to Electricity")
+plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
 """## 2011 analysis: Compare renewable energy 2011 with World Bank
 
-
+### Most Common Energy Source for Electricity across Kenyan Counties
 """
 
-Source
+copy_2011 = Energy_2011.copy(deep=True)
+copy_2011.head()
 
-Electricity_access
+#most common/ most prevalent energy source for electricity across Kenya
+#dropping irrelevant columns and csaving into a new dataframe
+mc = Energy_2011.drop(['percent_growth_elec_2009_2011','percent_with_elec','percent_without_elec'], axis=1)
+#grouping by aggregating all rows
+mc1 = mc.groupby([True]*len(mc)).sum()
 
+#showing the relevant column with the highest number
+mc1.columns.max()
+
+#Getting the distribution of households in descending order of most used source for elec
+mc_list = mc1.sum()
+mc_list.sort_values(ascending=False)
+
+#in terms of % of total households(tin lamps)
+round((mc1['no_of_households_with_tin_lamp'])/(mc1['households'])*100,2)
+
+"""### Type of Energy Source for Electricity Mostly relied on by individual counties
+
+Electricity use in %
+"""
+
+#Electricity highest counties by proportion
+#% elec pop per county
+copy_2011['percent_using_elec_source'] = round((copy_2011['no_of_households_with_electricity']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Electricity highest counties in %
+eh = copy_2011.groupby('county')['percent_using_elec_source'].sum()
+eh.nlargest(3)
+
+#Electricity scarce counties by proportion in %
+eh.nsmallest(3)
+
+"""Pressure lamp use in %"""
+
+#Pressure lamp use highest counties by proportion
+#% pressure lamp use pop per county
+copy_2011['percent_using_pressure_lamp'] = round((copy_2011['no_of_households_with_pressure_lamp']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Pressure lamp use highest counties in %
+plh = copy_2011.groupby('county')['percent_using_pressure_lamp'].sum()
+plh.nlargest(3)
+
+#Pressure lamp least use counties by proportion in %
+plh.nsmallest(3)
+
+"""Lantern use in %"""
+
+#Lantern use highest counties by proportion
+#% lantern use pop per county
+copy_2011['percent_using_lantern'] = round((copy_2011['no_of_households_with_lantern']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Lantern use highest counties in %
+lh = copy_2011.groupby('county')['percent_using_lantern'].sum()
+lh.nlargest(3)
+
+#Lantern least use counties by proportion in %
+lh.nsmallest(3)
+
+"""Tin Lamp use in %"""
+
+#Tin lamp use highest counties by proportion
+#% tin lamp use pop per county
+copy_2011['percent_using_tin_lamp'] = round((copy_2011['no_of_households_with_tin_lamp']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Tin lamp use highest counties in %
+tlh = copy_2011.groupby('county')['percent_using_tin_lamp'].sum()
+tlh.nlargest(3)
+
+#Tin lamp least use counties by proportion in %
+tlh.nsmallest(3)
+
+"""Gas Lamp use in %"""
+
+#Gas lamp use highest counties by proportion
+#% gas lamp use pop per county
+copy_2011['percent_using_gas_lamp'] = round((copy_2011['no_of_households_with_gas_lamp']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Gas lamp use highest counties in %
+glh = copy_2011.groupby('county')['percent_using_gas_lamp'].sum()
+glh.nlargest(3)
+
+#Gas lamp least use counties by proportion in %
+glh.nsmallest(3)
+
+"""Wood use in %"""
+
+#Wood use highest counties by proportion
+#% wood use pop per county
+copy_2011['percent_using_fuel_wood'] = round((copy_2011['no_of_households_with_fuel_wood']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Wood use highest counties in %
+wh = copy_2011.groupby('county')['percent_using_fuel_wood'].sum()
+wh.nlargest(3)
+
+#Wood least use counties by proportion in %
+wh.nsmallest(3)
+
+"""Solar use in %"""
+
+#Solar use highest counties by proportion
+#% solar use pop per county
+copy_2011['percent_using_solar'] = round((copy_2011['no_of_households_with_solar']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Solar use highest counties in %
+sh = copy_2011.groupby('county')['percent_using_solar'].sum()
+sh.nlargest(3)
+
+#Solar least use counties by proportion in %
+sh.nsmallest(3)
+
+"""Other sources in %"""
+
+#Other source use highest counties by proportion
+#% other source use pop per county
+copy_2011['percent_using_other'] = round((copy_2011['no_of_households_with_other']/copy_2011['households'])*100,2)
+copy_2011.head()
+
+#Solar use highest counties in %
+oh = copy_2011.groupby('county')['percent_using_other'].sum()
+oh.nlargest(3)
+
+#Other source least use counties by proportion in %
+oh.nsmallest(3)
+
+"""### Comparison between renewable energy 2011 with World Bank"""
+
+#Electricity connectivity 2011 in %
 Electricity_total = (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum()) / Energy_2011['households'].sum()
-Electricity_total * 100
+e2011 = round(Electricity_total * 100, 2)
+e2011
+#but W.B showed 29% access in 2011
+
+e2011 == Electricity_access.iloc[21, 2:]
 
 # Check if 2011 solar adds up to 0.305242% as reported by World Bank
 Solar = Energy_2011['no_of_households_with_solar'].sum() / (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum())
 Solar_percentage = Solar * 100
-Solar_percentage
+round(Solar_percentage,2)
 #Source.loc[Source.year == 2011, 'solar_percent_of_electricity'] / Solar_percentage
 # Value shows that the World Bank solar percentage is lower than the 2011 dataset from Open Data.
 
-# Check if 2011 electricity percentage matches hydro or oil as reported by World Bank
+# Check if 2011 electricity percentage matches hydro as reported by World Bank
 Electricity = Energy_2011['no_of_households_with_electricity'].sum() / (Energy_2011['no_of_households_with_electricity'].sum() + Energy_2011['no_of_households_with_solar'].sum())
-Elec_percentage = Electricity * 100
+Elec_percentage = round(Electricity * 100,2)
 Elec_percentage
 # Source.loc[Source.year == 2011, ''] / Solar_percentage
-
-"""### Is the country in line with 2020 and 2030 targets?
-
-"""
-
-#using access to elec diff btwn 09 and 11 was there progress in inc. access?(overall)
-#maybe divide that by number of years(2) and use that value loosely to calc. whether by 2020 and 2030 goals of 80 and 100
-#will be met.
-#80% divide by 2020-2009 to see annual ideal annual trend and compare to above.
 
 """## WORLD BANK DATASETS
 
