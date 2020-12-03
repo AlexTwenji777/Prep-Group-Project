@@ -659,3 +659,469 @@ plt.show()
 """### Is the country in line to achieve 100% renewable energy as the primary energy source?(2022)"""
 
 #renewable plot up to 2019 average that over the remaining year for 2020 and 2022???
+
+"""# DATA ANALYSIS 2
+
+## The most common source of energy for electricity
+"""
+
+# Let's load the relevant global datasets here
+
+Global_source = pd.read_csv('share-elec-by-source.csv')
+Global_source.head()
+
+Global_renewables = pd.read_csv('share-electricity-renewables.csv')
+Global_renewables.head()
+
+# Let's merge the 2 datasets as we had analysed them earlier and found them compatible
+
+Global_source['percent_Renewables_Total'] = Global_renewables['Renewables (% electricity)']
+Global_source.head()
+
+# Let's make the column titles consistent
+Global_source.columns = ['Entity', 'Code', 'Year', 'percent_coal_electricity', 'percent_oil_electricity', 'percent_gas_electricity', 'percent_nuclear_electricity', 'percent_solar_electricity', 'percent_wind_electricity', 'percent_hydro_electricity', 'percent_other_renewables', 'percent_renewables_total']
+Global_source.head()
+
+# Using the 2019 data for all countries
+Most_Recent = Global_source[Global_source.Year == 2019]
+Most_Recent.Entity.unique()
+
+# From the above we can see a World row, we'll ignore it and reintroduce it later to check validity of our results
+# We'll also remove the continents indicated i.e. Africa, Europe and North America.
+# Australia is both a country and continent, therefore, we'll leave it in when analysing countries
+Most_Recent_countries = Most_Recent[(Most_Recent['Entity'] != 'World') & (Most_Recent['Entity'] != 'Africa')  & (Most_Recent['Entity'] != 'Europe')  & (Most_Recent['Entity'] != 'North America')].copy(deep=True)
+Most_Recent_countries_coal = Most_Recent_countries.percent_coal_electricity.sum() / Most_Recent_countries.percent_coal_electricity.count()
+Most_Recent_countries_oil = Most_Recent_countries.percent_oil_electricity.sum() / Most_Recent_countries.percent_oil_electricity.count()
+Most_Recent_countries_gas = Most_Recent_countries.percent_gas_electricity.sum() / Most_Recent_countries.percent_gas_electricity.count()
+Most_Recent_countries_nuclear = Most_Recent_countries.percent_nuclear_electricity.sum() / Most_Recent_countries.percent_nuclear_electricity.count()
+Most_Recent_countries_solar = Most_Recent_countries.percent_solar_electricity.sum() / Most_Recent_countries.percent_solar_electricity.count()
+Most_Recent_countries_wind = Most_Recent_countries.percent_wind_electricity.sum() / Most_Recent_countries.percent_wind_electricity.count()
+Most_Recent_countries_hydro = Most_Recent_countries.percent_hydro_electricity.sum() / Most_Recent_countries.percent_hydro_electricity.count()
+Most_Recent_countries_other_renewables = Most_Recent_countries.percent_other_renewables.sum() / Most_Recent_countries.percent_other_renewables.count()
+Most_Recent_countries_renewables_total = Most_Recent_countries.percent_renewables_total.sum() / Most_Recent_countries.percent_renewables_total.count()
+
+Usage_2019 = [Most_Recent_countries_coal,Most_Recent_countries_oil,Most_Recent_countries_gas,Most_Recent_countries_nuclear,Most_Recent_countries_solar,Most_Recent_countries_wind,Most_Recent_countries_hydro,Most_Recent_countries_other_renewables]
+c = ['coal','oil','gas','nuclear','solar','wind','hydro','other_renewables']
+l = pd.DataFrame(Usage_2019,index = c)
+l
+# Below, we see the predominant source world-wide is oil, followed by hydro and finally gas.
+# The least contributors are solar, other renewables and wind
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(c,Usage_2019,color ='maroon',  width = 0.5)
+
+plt.xlabel("Source of Electricty")
+plt.ylabel("Electricty(%)")
+plt.title("Global Sources of Electricity in 2019")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+# Now using the World row only, to verify the results above
+Most_Recent_World = Most_Recent[Most_Recent['Entity'] == 'World'].copy(deep=True)
+Most_Recent_World
+# There's a difference here that needs to be analyzed
+
+# Iterating over each row to get the values
+for index, rows in Most_Recent_World.iterrows():
+    # Creating a list for the current row
+    World_2019 =[rows.percent_coal_electricity, rows.percent_oil_electricity, rows.percent_gas_electricity, rows.percent_nuclear_electricity, rows.percent_solar_electricity, rows.percent_wind_electricity, rows.percent_hydro_electricity, rows.percent_other_renewables]
+
+
+Names = ['coal','oil','gas','nuclear','solar','wind','hydro','other_renewables']
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(Names,World_2019,color ='maroon',  width = 0.5)
+
+plt.xlabel("Source of Electricty")
+plt.ylabel("Electricty(%)")
+plt.title("World Row Sources of Electricity in 2019")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+# Africa only
+
+Most_Recent_Africa = Most_Recent[Most_Recent['Entity'] == 'Africa'].copy(deep=True)
+Most_Recent_Africa
+
+# Iterating over each row to get the values
+for index, rows in Most_Recent_Africa.iterrows():
+    # Creating a list for the current row
+    Africa_list =[rows.percent_coal_electricity, rows.percent_oil_electricity, rows.percent_gas_electricity, rows.percent_nuclear_electricity, rows.percent_solar_electricity, rows.percent_wind_electricity, rows.percent_hydro_electricity, rows.percent_other_renewables]
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(Names,Africa_list,color ='blue',  width = 0.5)
+
+plt.xlabel("Source of Electricty")
+plt.ylabel("Electricty(%)")
+plt.title("World Row Sources of Electricity in 2019")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+# East Africa only
+
+Most_Recent_EA = Most_Recent[(Most_Recent['Entity'] == 'Kenya') | (Most_Recent['Entity'] == 'Tanzania') |
+                             (Most_Recent['Entity'] == 'Uganda') | (Most_Recent['Entity'] == 'South Sudan') |
+                             (Most_Recent['Entity'] == 'Ethiopia') | (Most_Recent['Entity'] == 'Rwanda') |
+                             (Most_Recent['Entity'] == 'Burundi')].copy(deep=True)
+Most_Recent_EA
+
+Most_Recent_EA_coal = Most_Recent_EA.percent_coal_electricity.sum() / Most_Recent_EA.percent_coal_electricity.count()
+Most_Recent_EA_oil = Most_Recent_EA.percent_oil_electricity.sum() / Most_Recent_EA.percent_oil_electricity.count()
+Most_Recent_EA_gas = Most_Recent_EA.percent_gas_electricity.sum() / Most_Recent_EA.percent_gas_electricity.count()
+Most_Recent_EA_nuclear = Most_Recent_EA.percent_nuclear_electricity.sum() / Most_Recent_EA.percent_nuclear_electricity.count()
+Most_Recent_EA_solar = Most_Recent_EA.percent_solar_electricity.sum() / Most_Recent_EA.percent_solar_electricity.count()
+Most_Recent_EA_wind = Most_Recent_EA.percent_solar_electricity.sum() / Most_Recent_EA.percent_solar_electricity.count()
+Most_Recent_EA_hydro = Most_Recent_EA.percent_hydro_electricity.sum() / Most_Recent_EA.percent_hydro_electricity.count()
+Most_Recent_EA_other_renewables = Most_Recent_EA.percent_other_renewables.sum() / Most_Recent_EA.percent_other_renewables.count()
+Most_Recent_EA_renewables_total = Most_Recent_EA.percent_renewables_total.sum() / Most_Recent_EA.percent_renewables_total.count()
+
+EA_Usage_2019 = [Most_Recent_EA_coal,Most_Recent_EA_oil,Most_Recent_EA_gas,Most_Recent_EA_nuclear,Most_Recent_EA_solar,Most_Recent_EA_wind,
+      Most_Recent_EA_hydro,Most_Recent_EA_other_renewables]
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(Names,EA_Usage_2019,color ='red',  width = 0.5)
+
+plt.xlabel("Source of Electricty")
+plt.ylabel("Electricty(%)")
+plt.title("East African Sources of Electricity in 2019")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+# Kenya Only
+
+Most_Recent_Kenya = Most_Recent[Most_Recent['Entity'] == 'Kenya'].copy(deep= True)
+Most_Recent_Kenya
+
+for index, rows in Most_Recent_Kenya.iterrows():
+    # Creating a list for the current row
+    Kenya_2019 =[rows.percent_coal_electricity, rows.percent_oil_electricity, rows.percent_gas_electricity, rows.percent_nuclear_electricity, rows.percent_solar_electricity, rows.percent_wind_electricity, rows.percent_hydro_electricity, rows.percent_other_renewables]
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(Names,Kenya_2019,color ='blue',  width = 0.5)
+
+plt.xlabel("Source of Electricty")
+plt.ylabel("Electricty(%)")
+plt.title("Kenya Sources of Electricity in 2019")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+Most_Recent_Kenya['Fossil_Fuels_Total'] = (Most_Recent_Kenya.percent_coal_electricity + Most_Recent_Kenya.percent_oil_electricity + Most_Recent_Kenya.percent_gas_electricity)
+Most_Recent_Kenya
+
+Most_Recent_EA['Fossil_Fuels_Total'] = (Most_Recent_EA.percent_coal_electricity + Most_Recent_EA.percent_oil_electricity + Most_Recent_EA.percent_gas_electricity)
+Most_Recent_EA
+
+Most_Recent_Africa['Fossil_Fuels_Total'] = (Most_Recent_Africa.percent_coal_electricity + Most_Recent_Africa.percent_oil_electricity + Most_Recent_Africa.percent_gas_electricity)
+Most_Recent_Africa
+
+Most_Recent_World['Fossil_Fuels_Total'] = (Most_Recent_World.percent_coal_electricity + Most_Recent_World.percent_oil_electricity + Most_Recent_World.percent_gas_electricity)
+Most_Recent_World
+
+Most_Recent_countries['Fossil_Fuels_Total'] = (Most_Recent_countries.percent_coal_electricity + Most_Recent_countries.percent_oil_electricity + Most_Recent_countries.percent_gas_electricity)
+Most_Recent_countries.head()
+
+Most_Recent_countries_Fuel_total = Most_Recent_countries['Fossil_Fuels_Total'].sum() / Most_Recent_countries['Fossil_Fuels_Total'].count()
+Most_Recent_countries_renewables_total
+
+Most_Recent_World_Fuel_total = Most_Recent_World['Fossil_Fuels_Total'].sum() / Most_Recent_World['Fossil_Fuels_Total'].count()
+Most_Recent_World.percent_renewables_total
+for index, rows in Most_Recent_World['percent_renewables_total'].iteritems():
+    # Creating a list for the current row
+    a = rows
+    print(a)
+# We've realised a problem here. the percent renewable column doesn't add up to the percent solar + wind +hydro + other renewables
+
+# To fix the above problem
+
+Most_Recent_World.drop('percent_renewables_total', axis= 1, inplace= True)
+
+# Add the new column with total percentage of renewable
+Most_Recent_World['Renewables_total'] = Most_Recent_World.percent_solar_electricity + Most_Recent_World.percent_wind_electricity + Most_Recent_World.percent_hydro_electricity + Most_Recent_World.percent_other_renewables
+Most_Recent_World.head()
+
+# We should do the same for the countries Dataset as it seems there's a point where the data didn't match due to merging
+# the Sources dataset with the Renewables total Dataset
+
+Most_Recent_countries.drop('percent_renewables_total', axis= 1, inplace= True)
+Most_Recent_countries.head()
+
+Most_Recent_countries['Renewables_total'] = Most_Recent_countries.percent_solar_electricity + Most_Recent_countries.percent_wind_electricity + Most_Recent_countries.percent_hydro_electricity + Most_Recent_countries.percent_other_renewables
+Most_Recent_countries.head()
+
+# Compare Kenyan Renewable and Fossil Fuel to the world using Countries data
+
+Most_Recent_Kenya.percent_renewables_total
+for index, rows in Most_Recent_Kenya['percent_renewables_total'].iteritems():
+    # Creating a list for the current row
+    Kenya_renewable_2019 = rows
+    print(Kenya_renewable_2019)
+
+for index, rows in Most_Recent_Kenya['Fossil_Fuels_Total'].iteritems():
+
+  # Creating a list for the current row
+    Kenya_Fuel_2019 = rows
+    print(Kenya_Fuel_2019)
+
+Most_Recent_countries_Renewables_total = Most_Recent_countries.Renewables_total.sum() / Most_Recent_countries.Renewables_total.count()
+Most_Recent_countries_Fuel_total
+Most_Recent_countries_Renewables_total
+
+g = [[Kenya_renewable_2019,Most_Recent_countries_Renewables_total], [Kenya_Fuel_2019,Most_Recent_countries_Fuel_total]]
+Global_comparison = pd.DataFrame(g, columns=['Kenya', 'Rest of the World'], index= ['Renewables', 'Fossil Fuels'])
+
+Global_comparison.plot(kind='barh')
+
+# Compare Kenyan Renewable and Fossil Fuel to the world using World Row data
+
+Most_Recent_World.Renewables_total
+for index, rows in Most_Recent_World['Renewables_total'].iteritems():
+    # Creating a list for the current row
+    World_renewable_2019 = rows
+    print(World_renewable_2019)
+
+for index, rows in Most_Recent_World['Fossil_Fuels_Total'].iteritems():
+    # Creating a list for the current row
+    World_Fuels_2019 = rows
+    print(World_Fuels_2019)
+
+w = [[Kenya_renewable_2019,World_renewable_2019], [Kenya_Fuel_2019,World_Fuels_2019]]
+World_comparison = pd.DataFrame(w, columns=['Kenya', 'Rest of the World'], index= ['Renewables', 'Fossil Fuels'])
+
+World_comparison.plot(kind='barh')
+
+Most_Recent_Africa.head()
+for index, rows in Most_Recent_Africa['percent_renewables_total'].iteritems():
+    # Creating a list for the current row
+    Africa_renewable_2019 = rows
+    print(Africa_renewable_2019)
+
+for index, rows in Most_Recent_Africa['Fossil_Fuels_Total'].iteritems():
+    # Creating a list for the current row
+    Africa_Fuels_2019 = rows
+    print(Africa_Fuels_2019)
+
+a = [[Kenya_renewable_2019,Africa_renewable_2019], [Kenya_Fuel_2019,Africa_Fuels_2019]]
+Africa_comparison = pd.DataFrame(a, columns=['Kenya', 'Africa'], index= ['Renewables', 'Fossil Fuels'])
+
+Africa_comparison.plot(kind='barh')
+
+Most_Recent_EA
+
+# We notice that from Rwanda onwards, the percent_renewables_total column has a similar issue
+# to the World row. We'll have to drop this and carry out the necessary calculations as we did before.
+
+Most_Recent_EA.drop('percent_renewables_total', axis= 1, inplace= True)
+
+Most_Recent_EA['Renewables_Total'] = Most_Recent_EA.percent_solar_electricity + Most_Recent_EA.percent_wind_electricity + Most_Recent_EA.percent_hydro_electricity + Most_Recent_EA.percent_other_renewables
+Most_Recent_EA
+
+Most_Recent_EA_Renewables_total = Most_Recent_EA.Renewables_Total.sum() / Most_Recent_EA.Renewables_Total.count()
+Most_Recent_EA_Fuels_Total = Most_Recent_EA.Fossil_Fuels_Total.sum() / Most_Recent_EA.Fossil_Fuels_Total.count()
+Most_Recent_EA_Renewables_total
+Most_Recent_EA_Fuels_Total
+
+e = [[Kenya_renewable_2019,Most_Recent_EA_Renewables_total], [Kenya_Fuel_2019,Most_Recent_EA_Fuels_Total]]
+EA_comparison = pd.DataFrame(e, columns=['Kenya', 'East Africa'], index= ['Renewables', 'Fossil Fuels'])
+
+EA_comparison.plot(kind='barh')
+
+"""## How does Kenya compare to the rest of the world in terms of access to electricity?"""
+
+Access = pd.read_csv('share-of-the-population-with-access-to-electricity.csv')
+Access.head()
+
+Access.drop('Code', axis= 1, inplace= True)
+Access.columns= ['Entity', 'Year', 'percentage_electricity_access']
+Access.head()
+
+Most_Recent_Access = Access[Access['Year'] == 2016]
+Most_Recent_Access.Entity.unique()
+
+#'Sub-Saharan Africa' and 'World' rows can be used for analysis in comparison to Kenya
+# Additionally, East African countries can be grouped to compare with Kenya
+
+
+Recent_World_Access = Most_Recent_Access[Most_Recent_Access.Entity == 'World']
+Recent_SSA_Access = Most_Recent_Access[Most_Recent_Access.Entity == 'Sub-Saharan Africa']
+Recent_Kenya_Access = Most_Recent_Access[Most_Recent_Access.Entity == 'Kenya']
+Recent_EA_Access = Most_Recent_Access[(Most_Recent_Access.Entity == 'Kenya') | (Most_Recent_Access.Entity == 'Tanzania') |
+                   (Most_Recent_Access.Entity == 'Uganda') | (Most_Recent_Access.Entity == 'South Sudan') |
+                   (Most_Recent_Access.Entity == 'Ethiopia') | (Most_Recent_Access.Entity == 'Rwanda') |
+                   (Most_Recent_Access.Entity == 'Burundi')]
+Recent_EA_Access
+# From below, we can see Kenya leads in access to electricity in East Africa with Burundi lagging.
+
+for index, rows in Recent_World_Access['percentage_electricity_access'].iteritems():
+    # Creating a list for the current row
+    World_Access_2016 = rows
+    print(World_Access_2016)
+
+for index, rows in Recent_SSA_Access['percentage_electricity_access'].iteritems():
+    # Creating a list for the current row
+    SSA_Access_2016 = rows
+    print(SSA_Access_2016)
+
+for index, rows in Recent_Kenya_Access['percentage_electricity_access'].iteritems():
+    # Creating a list for the current row
+    Kenya_Access_2016 = rows
+    print(Kenya_Access_2016)
+
+EA_Access_2016 = Recent_EA_Access.percentage_electricity_access.sum() / Recent_EA_Access.percentage_electricity_access.count()
+EA_Access_2016
+
+Sections = ['World', 'Sub-Saharan Africa', 'East Africa', 'Kenya']
+Elec_list = [World_Access_2016, SSA_Access_2016, EA_Access_2016, Kenya_Access_2016]
+
+#Plotting comparison
+plt.figure(figsize = (10, 5))
+
+# creating the bar plot
+plt.bar(Sections,Elec_list,color ='green',  width = 0.5)
+
+plt.xlabel("Kenya vs The World")
+plt.ylabel("Access to Electricty(%)")
+plt.title("Kenya's access to electricity as compared to the World (as of 2016)")
+# plt.xticks(np.arange(2009, 2012,1.0))
+plt.show()
+
+"""## The highest growth source of electricity since 2013 globally? (Significant year due to the Paris Climate Agreement)"""
+
+Year_2013 = Global_source[Global_source.Year == 2013].copy(deep=True)
+Year_2013.drop('percent_renewables_total', axis= 1, inplace= True) # To avoid problems faced earlier due to merging Sources data with Renewanles total Data
+
+# Accessing Countries only
+Year_2013_countries = Year_2013[(Year_2013['Entity'] != 'World') & (Year_2013['Entity'] != 'Africa')  & (Year_2013['Entity'] != 'Europe')  & (Year_2013['Entity'] != 'North America')]
+Year_2013_countries.head()
+Year_2013_countries_coal = Year_2013_countries.percent_coal_electricity.sum() / Year_2013_countries.percent_coal_electricity.count()
+Year_2013_countries_oil = Year_2013_countries.percent_oil_electricity.sum() / Year_2013_countries.percent_oil_electricity.count()
+Year_2013_countries_gas = Year_2013_countries.percent_gas_electricity.sum() / Year_2013_countries.percent_gas_electricity.count()
+Year_2013_countries_nuclear = Year_2013_countries.percent_nuclear_electricity.sum() / Year_2013_countries.percent_nuclear_electricity.count()
+Year_2013_countries_solar = Year_2013_countries.percent_solar_electricity.sum() / Year_2013_countries.percent_solar_electricity.count()
+Year_2013_countries_wind = Year_2013_countries.percent_wind_electricity.sum() / Year_2013_countries.percent_wind_electricity.count()
+Year_2013_countries_hydro = Year_2013_countries.percent_hydro_electricity.sum() / Year_2013_countries.percent_hydro_electricity.count()
+Year_2013_countries_other_renewables = Year_2013_countries.percent_other_renewables.sum() / Year_2013_countries.percent_other_renewables.count()
+
+Usage_2013 = [Year_2013_countries_coal,Year_2013_countries_oil,Year_2013_countries_gas,Year_2013_countries_nuclear,Year_2013_countries_solar,Year_2013_countries_wind,Year_2013_countries_hydro,Year_2013_countries_other_renewables]
+type(Usage_2013)
+type(Usage_2019)
+# Recall Usage_2019 and source names c from the analysis of most recent (2019) countries data
+
+Usage_df = pd.DataFrame({
+    "2013":Usage_2013,
+    "2019":Usage_2019,
+    }, index= c)
+
+Usage_df
+# It doesn't look like there was much change
+
+Usage_df.plot(kind="barh")
+plt.title("World Countries 2013 vs 2019 Sources")
+plt.xlabel("Electricity (%)")
+plt.ylabel("Sources of Electricity")
+
+Global_growth = Usage_df['2019'] - Usage_df['2013']
+Global_growth
+# From below we can see most growth is in wind, and least growth is in hydro
+
+# Verifying with World Row
+Year_2013_World = Year_2013[Year_2013['Entity'] == 'World'].copy(deep= True)
+Year_2013_World
+
+for index, rows in Year_2013_World.iterrows():
+    # Creating a list for the current row
+    World_2013 =[rows.percent_coal_electricity, rows.percent_oil_electricity, rows.percent_gas_electricity, rows.percent_nuclear_electricity, rows.percent_solar_electricity, rows.percent_wind_electricity, rows.percent_hydro_electricity, rows.percent_other_renewables]
+    print(World_2013)
+
+World_Usage_df = pd.DataFrame({
+    "2013":World_2013,
+    "2019":World_2019,
+    }, index= c)
+
+World_Usage_df
+
+# It doesn't look like there was much change
+
+World_Usage_df.plot(kind="barh")
+plt.title("World 2013 vs 2019 Sources")
+plt.xlabel("Electricity (%)")
+plt.ylabel("Sources of Electricity")
+
+World_growth = World_Usage_df['2019'] - World_Usage_df['2013']
+World_growth
+# The most growth is in wind and the least is in coal
+
+# East Africa
+
+EA_2013 = Year_2013[(Year_2013['Entity'] == 'Kenya') | (Year_2013['Entity'] == 'Tanzania') |
+                             (Year_2013['Entity'] == 'Uganda') | (Year_2013['Entity'] == 'South Sudan') |
+                             (Year_2013['Entity'] == 'Ethiopia') | (Year_2013['Entity'] == 'Rwanda') |
+                             (Year_2013['Entity'] == 'Burundi')]
+EA_2013
+EA_2013_coal = EA_2013.percent_coal_electricity.sum() / EA_2013.percent_coal_electricity.count()
+EA_2013_oil = EA_2013.percent_oil_electricity.sum() / EA_2013.percent_oil_electricity.count()
+EA_2013_gas = EA_2013.percent_gas_electricity.sum() / EA_2013.percent_gas_electricity.count()
+EA_2013_nuclear = EA_2013.percent_nuclear_electricity.sum() / EA_2013.percent_nuclear_electricity.count()
+EA_2013_solar = EA_2013.percent_solar_electricity.sum() / EA_2013.percent_solar_electricity.count()
+EA_2013_wind = EA_2013.percent_wind_electricity.sum() / EA_2013.percent_wind_electricity.count()
+EA_2013_hydro = EA_2013.percent_hydro_electricity.sum() / EA_2013.percent_hydro_electricity.count()
+EA_2013_other_renewables = EA_2013.percent_other_renewables.sum() / EA_2013.percent_other_renewables.count()
+
+EA_Usage_2013 = [EA_2013_coal,EA_2013_oil,EA_2013_gas,EA_2013_nuclear,EA_2013_solar,EA_2013_wind,EA_2013_hydro,EA_2013_other_renewables]
+
+EA_Usage_df = pd.DataFrame({
+    "2013":EA_Usage_2013,
+    "2019":EA_Usage_2019,
+    }, index= c)
+
+EA_Usage_df
+
+EA_Usage_df.plot(kind="barh")
+plt.title("East Africa 2013 vs 2019 Sources")
+plt.xlabel("Electricity (%)")
+plt.ylabel("Sources of Electricity")
+
+EA_growth = EA_Usage_df['2019'] - EA_Usage_df['2013']
+EA_growth
+
+# Gas has most growth, oil has the least
+
+# Kenya
+
+Year_2013_Kenya = Year_2013[Year_2013['Entity'] == 'Kenya'].copy(deep= True)
+Year_2013_Kenya
+
+for index, rows in Year_2013_Kenya.iterrows():
+    # Creating a list for the current row
+    Kenya_2013 =[rows.percent_coal_electricity, rows.percent_oil_electricity, rows.percent_gas_electricity, rows.percent_nuclear_electricity, rows.percent_solar_electricity, rows.percent_wind_electricity, rows.percent_hydro_electricity, rows.percent_other_renewables]
+    print(Kenya_2013)
+
+Kenya_Usage_df = pd.DataFrame({
+    "2013":Kenya_2013,
+    "2019":Kenya_2019,
+    }, index= c)
+
+Kenya_Usage_df
+
+Kenya_Usage_df.plot(kind="barh")
+plt.title("Kenya 2013 vs 2019 Sources")
+plt.xlabel("Electricity (%)")
+plt.ylabel("Sources of Electricity")
+
+Kenya_growth = Kenya_Usage_df['2019'] - Kenya_Usage_df['2013']
+Kenya_growth
+# Other renewables have seen more growth while hydro has seen the least
