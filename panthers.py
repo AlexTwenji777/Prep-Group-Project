@@ -562,7 +562,7 @@ Elec_percentage
 #population with electricity over the years
 Electricity_access.head()
 
-Electricity_access.plot(x='year', y='percent_access_to_electricity',figsize= (20,10), label ='Access to Electricity')
+Electricity_access.plot(x='year', y='percent_access_to_electricity',figsize= (10,5), label ='Access to Electricity')
 plt.title('Proportion of Kenyan Population with Access to Electricity')
 plt.xlabel('YEAR')
 plt.ylabel('Population with Access to Electricity(%)')
@@ -576,7 +576,7 @@ plt.show()
 Source.head()
 
 #defining what to plot and how to do it
-plt.figure(figsize= (20,10))
+plt.figure(figsize= (12,6))
 plt.plot(Source['year'], Source['coal_percent_of_electricity'],'r', label='Coal')
 plt.plot(Source['year'], Source['oil_percent_of_electricity'], 'b', label='Oil')
 plt.plot(Source['year'], Source['hydro_percent_of_electricity'], 'g', label='Hydro')
@@ -604,7 +604,7 @@ Source['fossil_percent_of_electricity'] = Source['coal_percent_of_electricity'] 
 Source.head()
 
 #plotting the share of fossil fuel over the years
-Source.plot(x='year', y='fossil_percent_of_electricity',figsize= (20,10), label= 'Fossil')
+Source.plot(x='year', y='fossil_percent_of_electricity',figsize= (10,5), label= 'Fossil')
 plt.title('Proportion of Fossil Fuel as Electricity Source in Kenya')
 plt.xlabel('Years')
 plt.ylabel('Fossil Fuel as Electricity Source(%)')
@@ -623,7 +623,7 @@ plt.show()
 
 #Renewables usage
 #plotting the share of renewables over the years
-Source.plot(x='year', y='percent_total_renewables',figsize= (20,10), label = 'Renewables')
+Source.plot(x='year', y='percent_total_renewables',figsize= (10,5), label = 'Renewables')
 plt.title('Proportion of Renewables as Electricity Source in Kenya')
 plt.xlabel('Years')
 plt.ylabel('Renewables as Electricity Source(%)')
@@ -634,7 +634,7 @@ plt.show()
 
 #plotting both together to view the trends simultaneously over the years
 #defining what to plot and how to do it
-plt.figure(figsize= (20,10))
+plt.figure(figsize= (10,5))
 plt.plot(Source['year'], Source['fossil_percent_of_electricity'],'r', label='Fossil')
 plt.plot(Source['year'], Source['percent_total_renewables'], 'g', label='Renewables')
 
@@ -1195,3 +1195,8 @@ plt.ylabel("Sources of Electricity")
 Kenya_growth = Kenya_Usage_df['2019'] - Kenya_Usage_df['2013']
 Kenya_growth
 # Other renewables have seen more growth while hydro has seen the least
+
+"""# RECOMMENDATION
+
+The data from 2011 showed room for growth especially in regions outside major cities, where electricity access was very low. It was also noticed that areas with higher access to electricity are the regions generally known to be higher contributors to the economy, hence are regions of higher median income. These areas are generally more developed. To achieve growth of the economy as expected by Vision 2030, electricity access to these less developed regions could improve their economic conditions. A recommendation could be to research solar lamps as an energy source for low income houses. Additionally, counties should be involved in national electricity development plans. Countrywide, electricity access is growing steadily as of 2016 but more needs to be done if the targets of 80% by 2020 and 100% connectivity by 2022 are to be met. Renewables are recommended as strides have already been made and Kenya has a wealth of natural resources (wind, solar and geothermal) that it can exploit. This will help expedite the goal of sustainability as expected from the Paris Agreement. Finally there also  needs to be improved data collection in Kenya and Africa (in general) in order to more effectively track Kenya’s progress.
+"""
