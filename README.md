@@ -1,4 +1,4 @@
-# Panthers_Group_Project_2020_12_04#
+Panthers Group Project 2020-12-04 
 ---
 ## __Electricity Consumption in Kenya__ ##
 
@@ -8,7 +8,11 @@ Kenya’s goal is to reach 100% electricity connectivity by 2022 while enabling 
 This means 100% sustainable energy in terms of electricity generation and consumption. Additionally, in accordance with the Paris Agreement, Kenya committed itself to tackling climate change. 
 The country’s determined contribution (National Determined Contribution), which is pegged on the 2013 Kenya Climate Change Action Plan, promises to reduce greenhouse gas (GHG) emissions by 30% by 2030 from 2015 (Ministry of Environment and Natural Resources 2015). 
 There is a need to track the consumption of energy over the years.
-
+ 
+---
+## _Sample_ ##
+|![<img src="/Elec_Access.png"](/Elec_Access.png)|
+![<img src="/Kenya_Sources_2013_vs_2019.png"](/Kenya_Sources_2013_vs_2019.png)
 ---
 ## _Platforms Used_ ##
 Atom
@@ -29,7 +33,7 @@ This project is used to determine whether Kenya is in line to meet the desired g
 It also tracks the sources of electricity to see if Renewable sources are seeing an uptake as expected from the Paris Agreement on Climate Change.
 ---
 ## _Authors and Acknowledgment_ ##
-AlexTwenji777, sgich, sisendi, (Claire Muthoni) and (Peter Kimeli)
+AlexTwenji777, sgich, sisendi, clairemuthoni and (Peter Kimeli)
 Assistance was granted from the Technical Mentors of Moringa School (Nairobi, Kenya).
 ---
 ## License
