@@ -11,7 +11,7 @@ There is a need to track the consumption of energy over the years.
  
 ---
 ## _Sample_ ##
-|![<img src="/Elec_Access.png"](/Elec_Access.png)|
+![<img src="/Elec_Access.png"](/Elec_Access.png)
 ![<img src="/Kenya_Sources_2013_vs_2019.png"](/Kenya_Sources_2013_vs_2019.png)
 ---
 ## _Platforms Used_ ##
@@ -26,15 +26,18 @@ Python
 Pandas Library
 Numpy Library
 Matplotlib Library
+
 ---
 
 ## _Motivation_ ##
 This project is used to determine whether Kenya is in line to meet the desired goals for Electricity consumption and access to the general population according to vision 2030.
 It also tracks the sources of electricity to see if Renewable sources are seeing an uptake as expected from the Paris Agreement on Climate Change.
+
 ---
 ## _Authors and Acknowledgment_ ##
 AlexTwenji777, sgich, sisendi, clairemuthoni and (Peter Kimeli)
 Assistance was granted from the Technical Mentors of Moringa School (Nairobi, Kenya).
+
 ---
 ## License
 MIT © AlexTwenji777
